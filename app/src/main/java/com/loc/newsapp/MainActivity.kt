@@ -6,6 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -34,7 +39,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NewsAppTheme {
-                Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.background)
+//                    .padding(WindowInsets.systemBars.asPaddingValues())
+                ) {
                     // similar down
                     /*OnBoardingScreen(event = {
                         vm.onEvent(it)
