@@ -40,7 +40,6 @@ fun DetailScreen(
     navigateUp: () -> Unit
 ) {
     val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -52,7 +51,6 @@ fun DetailScreen(
                     it.data = article.url.toUri()
                     if (it.resolveActivity(context.packageManager) != null) { //if there's an app to handle it
                         context.startActivity(it)
-
                     }
                 }
             },
@@ -85,37 +83,37 @@ fun DetailScreen(
             },
             onBackClick = navigateUp
         )
-    }
 
-    LazyColumn( //vertical
-        modifier = Modifier.fillMaxWidth(), contentPadding =
-            PaddingValues(start = MediumPadding1, end = MediumPadding1, bottom = MediumPadding1)
-    ) {
-        item {
-            AsyncImage(
-                model = ImageRequest.Builder(context = context).data(article.urlToImage).build(),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(ArticleImageHeight)
-                    .clip(MaterialTheme.shapes.medium),
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.height(MediumPadding1))
-            Text(
-                text = article.title,
-                style = MaterialTheme.typography.displaySmall,
-                color = colorResource(id = R.color.text_title)
-            )
+        LazyColumn( //vertical
+            modifier = Modifier.fillMaxWidth(), contentPadding =
+                PaddingValues(start = MediumPadding1, end = MediumPadding1, bottom = MediumPadding1)
+        ) {
+            item {
+                AsyncImage(
+                    model = ImageRequest.Builder(context = context).data(article.urlToImage)
+                        .build(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(ArticleImageHeight)
+                        .clip(MaterialTheme.shapes.medium),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(modifier = Modifier.height(MediumPadding1))
+                Text(
+                    text = article.title,
+                    style = MaterialTheme.typography.displaySmall,
+                    color = colorResource(id = R.color.text_title)
+                )
 
-            Text(
-                text = article.content,
-                style = MaterialTheme.typography.bodyMedium,
-                color = colorResource(id = R.color.body)
-            )
+                Text(
+                    text = article.content,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(id = R.color.body)
+                )
 
+            }
         }
-
     }
 }
 
