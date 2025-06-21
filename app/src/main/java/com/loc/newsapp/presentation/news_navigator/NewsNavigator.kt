@@ -1,5 +1,6 @@
 package com.loc.newsapp.presentation.news_navigator
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHost
@@ -51,26 +53,42 @@ fun NewsNavigator() {
     var selectedItem by rememberSaveable {
         mutableStateOf(0)
     }
+    selectedItem = remember(key1 = backstackState) {
+        when (backstackState?.destination?.route) {
+            "homeScreen" -> 0
+            "searchScreen" -> 1
+            "bookmarkScreen" -> 2
+            else -> 0
+        }
+    }
 
-    selectedItem = when (backstackState?.destination?.route) {
-        "homeScreen" -> 0
-        "searchScreen" -> 1
-        "bookmarkScreen" -> 2
-        else -> 0
+    val isBottomBarVisible = remember(key1 = backstackState) {
+        backstackState?.destination?.route == Route.HomeScreen.route
+                || backstackState?.destination?.route == Route.SearchScreen.route
+                || backstackState?.destination?.route == Route.BookmarkScreen.route
     }
 
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
-        NewsBottomNavigation(items = bottomNavigationItem, selected = selectedItem, onItemClick = { index ->
-            when (index) {
-                0 -> navigateToTab(navController = navController, route = HomeScreen.route)
-                1 -> navigateToTab(navController = navController, route = Route.SearchScreen.route)
-                2 -> navigateToTab(
-                    navController = navController,
-                    route = Route.BookmarkScreen.route
-                )
+        if (isBottomBarVisible) {
+            NewsBottomNavigation(
+                items = bottomNavigationItem,
+                selected = selectedItem,
+                onItemClick = { index ->
+                    when (index) {
+                        0 -> navigateToTab(navController = navController, route = HomeScreen.route)
+                        1 -> navigateToTab(
+                            navController = navController,
+                            route = Route.SearchScreen.route
+                        )
 
-            }
-        })
+                        2 -> navigateToTab(
+                            navController = navController,
+                            route = Route.BookmarkScreen.route
+                        )
+
+                    }
+                })
+        }
     }) {
         val bottomPadding = it.calculateBottomPadding()
 
@@ -105,7 +123,13 @@ fun NewsNavigator() {
             }
             composable(route = Route.DetailsScreen.route) {
                 val detailViewModel: DetailsViewModel = hiltViewModel()
-                // TODO: Handle sideEffect
+                if (detailViewModel.sideEffect != null) {
+                    Toast.makeText(
+                        LocalContext
+                            .current, detailViewModel.sideEffect, Toast.LENGTH_LONG
+                    ).show()
+                    detailViewModel.onEvent(DetailsEvent.RemoveSideEffect)
+                }
                 navController.previousBackStackEntry?.savedStateHandle?.get<Article?>("article") //get the data from the previous screen
                     ?.let { article ->
                         DetailScreen(
