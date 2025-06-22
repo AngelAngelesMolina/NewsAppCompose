@@ -20,14 +20,18 @@ fun ArticlesList(
     articles: List<Article>,
     onClick: (Article) -> Unit
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(MediumPadding1),
-        contentPadding = PaddingValues(all = ExtraSmallPadding2)
-    ) {
-        items(articles.size) {
-            val article = articles[it]
-            ArticleCard(article = article, onClickListener = { onClick(article) })
+    if (articles.isEmpty()) {
+        EmptyScreen()
+    } else {
+        LazyColumn(
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(MediumPadding1),
+            contentPadding = PaddingValues(all = ExtraSmallPadding2)
+        ) {
+            items(articles.size) {
+                val article = articles[it]
+                ArticleCard(article = article, onClickListener = { onClick(article) })
+            }
         }
     }
 }
